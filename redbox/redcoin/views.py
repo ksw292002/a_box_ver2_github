@@ -8,6 +8,9 @@ from django.shortcuts import redirect
 # access control을 위해 LOGIN_URL 참조용
 from django.conf import settings
 
+# access control을 위한 decorator 참조용
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 # 참고 :
@@ -36,6 +39,10 @@ def detail(request, pk) :
     )
     return HttpResponse('\n'.join(msg))
 
+# 아래의 user.is_authencated를 한문장으로 간소화시켜줌.
+# 이럴꺼면 밑에꺼 왜했나.... 자괴감들어...
+# login 후 이동할 주소 => setting.LOGIN_URL로 자동 지정됨.
+@login_required
 def create(request) :
 
     # login 한 유저인지에 대한 여부
@@ -43,8 +50,8 @@ def create(request) :
     # user.is_authenticated => O
     # 메서드가 아니라 property로 바뀜.
     # bool값으로 반환함 => X => 그냥 자체로 property임.
-    if( not request.user.is_authenticated ) :
-        return redirect(settings.LOGIN_URL)
+    # if( not request.user.is_authenticated ) :
+    #     return redirect(settings.LOGIN_URL)
 
     if(request.method == "GET") :
         form = FileUpForm()
