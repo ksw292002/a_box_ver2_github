@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>{{ user1.username }}님의 프로필페이지</h1>
+<ul>
+{% for storedfiles in user1.storedfiles_set.all %}
+    <li><img src="{{ storedfiles.thumnail.url }}" width=500 /></li>
+{% empty %}
+    <li>photo empty</li>
+{% endfor %}
+</ul>
+
+
+{% endblock %}

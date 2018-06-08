@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^storedfiles/(?P<pk>[0-9]+)/$', detail, name='detail'),
     url(r'^storedfiles/upload/$', create, name='create'),
     url(r'^redcoin/', include('redcoin.urls')),
+    url(r'^users/', include('profiles.urls')),
     path('admin/', admin.site.urls),
     url(
         r'^accounts/login/',
