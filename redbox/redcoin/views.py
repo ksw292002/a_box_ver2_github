@@ -39,10 +39,12 @@ def detail(request, pk) :
 def create(request) :
 
     # login 한 유저인지에 대한 여부
-    # request.user의 is_authenticated() 메서드 사용.
-    # bool값으로 반환함.
-    #if( not request.user.is_authenticated()) :
-    #    return redirect(settings.LOGIN_URL)
+    # request.user의 is_authenticated() 메서드 사용 => X
+    # user.is_authenticated => O
+    # 메서드가 아니라 property로 바뀜.
+    # bool값으로 반환함 => X => 그냥 자체로 property임.
+    if( not request.user.is_authenticated ) :
+        return redirect(settings.LOGIN_URL)
 
     if(request.method == "GET") :
         form = FileUpForm()
