@@ -24,10 +24,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # create라는, model form 기능을 사용하기 위해 views에서 import
-from redcoin.views import create
+# 그리고 Sign Up을 사용하기 위해
+from redcoin.views import create, index
 
 urlpatterns = [
-    url(r'^hello/$', hello),
+    url(r'^hello/$', hello), # url HttpResponse simple testing
     url(r'^storedfiles/(?P<pk>[0-9]+)/$', detail, name='detail'),
     url(r'^storedfiles/upload/$', create, name='create'),
     url(r'^redcoin/', include('redcoin.urls')),
@@ -61,6 +62,9 @@ urlpatterns = [
             'next_page': settings.LOGIN_URL,
         }
     ),
+    
+    # index를 통한 sign up function
+    url(r'^$', index, name = 'index'),
     
 ]
 

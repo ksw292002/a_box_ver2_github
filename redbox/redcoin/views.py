@@ -1,15 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import StoredFiles
 from django.shortcuts import get_object_or_404
-from .forms import FileUpForm
-from django.shortcuts import redirect
+
+# Sign Up, Upload를 위한 model form
+from .forms import FileUpForm, SignUpForm
 
 # access control을 위해 LOGIN_URL 참조용
 from django.conf import settings
 
 # access control을 위한 decorator 참조용
 from django.contrib.auth.decorators import login_required
+
+# Sign Up을 위한 User Model 참조와 Login function
+from django.contrib.auth.models import User
+from django.contrib.auth import login
 
 # Create your views here.
 
@@ -18,13 +23,27 @@ from django.contrib.auth.decorators import login_required
 # login 상태에서는 user 인스턴스가
 # login이 되지 않은 상태에서는 AnonymousUser 인스턴스가 있다.
 
+def index(request):
+    if(request.method == "POST") :
+        form = SignUpForm(request.POST)
+        
+        # form 자체에서 유효성 검사
+        if(form.is_valid()) :
+            # **form.cleaned_data : 유효성 및 파이썬 반환을 고려해
+            # request.POST로 접근하는 것 보다 이 방법을 권장한다.
+            new_user = User.objects.create_user(**form.cleaned_data)
+            login(request, new_user)
+            return redirect('users/')
+    else:
+        form = SignUpForm()
+        return render(request, 'signup.html', context={'form': form})
 
-def index(request) :
-    return HttpResponse("Good")
 
+# url - view connection simple test
 def hello(request) :
     return HttpResponse("Hello")
 
+@login_required
 def detail(request, pk) :
     
     storedFile = get_object_or_404(StoredFiles, pk=pk) # 여기서 pk는 models.StoredFiles의 primary_key일 것
