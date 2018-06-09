@@ -13,16 +13,18 @@
         템플릿에서 객체 이름이나 함수를 명시하면
         파이썬이 대신 호출해서 넘겨준다.
         (소괄호)사용을 못하니 직접 인자를 넘겨주지 못하는 단점이 있다.
+
+        이 경우 메서드 사용이 안되므로, 정렬, 필터로 데이터를 넘기려면
+        이 템플릿을 불러오는 views에서 정렬, 필터를 적용하고
+        변수를 지정하여 템플릿으로 넘겨야 한다.
      -->
-    {% for storedfiles in user1.storedfiles_set.all %}
-        <!--
-            <li><a href="{{ storedfiles.thumnail.url }}" download="downloadedfile">
-                {{ storedfiles.thumnail.url }}"
-            </li></a>
-        -->
-
-        <li><img src="" /></li>
-
+    {% for storedfile in storedfiles %}
+                
+        <li><a href="{{ storedfile.thumnail.url }}" download="downloadedfile">
+            {{ storedfile.thumnail.url }}"
+        </li></a>
+    
+       
     {% empty %}
         <li>photo empty</li>
     {% endfor %}

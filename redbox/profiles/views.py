@@ -8,11 +8,18 @@ from django.contrib.auth import get_user_model
 def profile(request, username) :
     # settings의 AUTH_USER_MODEL을 기준으로 유저모델을 가져옴.
     User = get_user_model()
+    # User는 User model의 인스턴스이고
+    # User model은 StoredFiles와 Foreign key로 연결되어 있다.
     user = get_object_or_404(User, username=username)
+
+    # view 측에서의 데이터 순서 정렬방법
+    storedfiles = user.storedfiles_set.order_by('-created_at', '-pk')
 
     ctx = {
         # template로 넘길 context 요소들
         'user1': user,
+        # 정렬된 데이터를 템플릿에 변수로서 넘김
+        'storedfiles': storedfiles,
 
     }
     return render(request, 'profile.html', ctx)
