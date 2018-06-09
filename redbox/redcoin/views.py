@@ -4,7 +4,7 @@ from .models import StoredFiles
 from django.shortcuts import get_object_or_404
 
 # Sign Up, Upload를 위한 model form
-from .forms import FileUpForm, SignUpForm
+from .forms import FileUpForm, SignUpForm, LoginForm
 
 # access control을 위해 LOGIN_URL 참조용
 from django.conf import settings
@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 
 # Sign Up을 위한 User Model 참조와 Login function
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 
 # Create your views here.
 
@@ -37,6 +37,29 @@ def index(request):
     else:
         form = SignUpForm()
         return render(request, 'signup.html', context={'form': form})
+
+
+# login을 뷰에 따로 구현하는 것에서 뷰이름을 'login'이면 안된다.
+# 이미 login이 auth에 있고, 이를 우리는 사용해야 한다.
+def signin(request) :
+    if(request.method == "POST") :
+        #form = LoginForm(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if(user != None) :
+            login(request, user)
+            return redirect('/users/')
+        else :
+            # user를 찾지 못할 경우 or user 로그인에 실패한 경우
+            return HttpResponse("Login Failed")
+
+    else :
+        form = LoginForm()
+        return render(request, 'login.html', context={'form':form})
+
+
 
 
 # url - view connection simple test

@@ -4,7 +4,7 @@ from django import forms
 
 from .models import StoredFiles
 
-# User Sign Up function 구현
+# User Sign Up, LogIn function 구현
 from django.contrib.auth.models import User
 
 
@@ -21,3 +21,12 @@ class SignUpForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
         fields = ['username', 'email', 'password']
+
+# Login function 구현
+class LoginForm(forms.ModelForm) :
+    class Meta:
+        model = User
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
+        fields = ('username', 'password',)

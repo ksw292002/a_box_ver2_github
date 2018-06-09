@@ -25,7 +25,7 @@ from django.conf.urls.static import static
 
 # create라는, model form 기능을 사용하기 위해 views에서 import
 # 그리고 Sign Up을 사용하기 위해
-from redcoin.views import create, index
+from redcoin.views import create, index, signin
 
 urlpatterns = [
     url(r'^hello/$', hello), # url HttpResponse simple testing
@@ -33,22 +33,24 @@ urlpatterns = [
     url(r'^storedfiles/upload/$', create, name='create'),
     url(r'^redcoin/', include('redcoin.urls')),
     url(r'^users/', include('profiles.urls')),
+    url(r'^login/$', signin, name='login'),
     path('admin/', admin.site.urls),
-    url(
-        r'^accounts/login/',
-        # django.contrib.auth.views를 auth_views로 위에 설정했고,
-        # 이것의 login 뷰함수를 작동시킴
-        auth_views.login,
-        name='login',
+    
+    # url(
+    #     r'^accounts/login/',
+    #     # django.contrib.auth.views를 auth_views로 위에 설정했고,
+    #     # 이것의 login 뷰함수를 작동시킴
+    #     auth_views.login,
+    #     name='login',
         
-        # 추가로 전할달 인자
-        kwargs={
-            # template 중 선택
-            'template_name': 'login.html'
-        }
-    ),
+    #     # 추가로 전할달 인자
+    #     kwargs={
+    #         # template 중 선택
+    #         'template_name': 'login.html'
+    #     }
+    # ),
     url(
-        r'^accounts/logout/',
+        r'^users/logout/',
         # django.contrib.auth.views를 auth_views로 위에 설정했고,
         # 이것의 logout 뷰함수를 작동시킴
         auth_views.logout,
@@ -59,7 +61,8 @@ urlpatterns = [
             # next_page : 로그아웃 후 이동할 url
             # 이 항목이 없으면 기본 django logout page로 이동
             # LOGIN_URL은 기본적으로는 /accounts/login/ 으로 지정되어있음
-            'next_page': settings.LOGIN_URL,
+            # 'next_page': settings.LOGIN_URL,
+            'next_page': '/'
         }
     ),
     

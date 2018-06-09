@@ -135,3 +135,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # Login 후 이동할 URL. 따로 지정하지 않는다면 이 URL에 따라 이동한다.
 LOGIN_REDIRECT_URL = '/storedfiles/upload/'
+
+
