@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 
 # dynamoDB의 연결(테이블 생성, 파일정보 저장)과 관련된 기능
-from .dynamo_manager import createFileList
+from .dynamo_manager import createFileList, updateFileInfo
 
 # Create your views here.
 
@@ -132,9 +132,12 @@ def create(request) :
             # 여러가지 보안상의 문제가 있지만, 여기서는 편하게
             # 잠시 commit=False로 하고 아래와 같인 직접 할당.
             obj.user = request.user
-            # 그리고 최종 save()를 통해 유저정보까지 DB에 반영.
+            # 그리고 최종 save()를 통해 유저정보까지 DB에 반영.            
             obj.save()
-            
+
+            # 해당 파일 로컬 업로드 후에 dynamo에 해당 파일에 대한 정보 업데이트
+            updateFileInfo(request.user.username,obj.content.url,obj.content.url)
+
             # redirect는 지정한 URL로 이동(?)시킨다.
             # 만약 인자가 model의 인스턴스라면
             # 그 객체의 get_absolute_url() 실행

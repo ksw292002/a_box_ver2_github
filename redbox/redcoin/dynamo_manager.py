@@ -46,3 +46,17 @@ def createFileList(username) :
     print("Table created")
     print("count :")
     print(table.item_count)
+
+# 유저이름을 받아서, 해당 유저의 file list에 받아온 file 이름과 그 url을 업데이트
+def updateFileInfo(username, fname, furl) :
+    # Get the service resource.
+    dynamodb = boto3.resource('dynamodb')
+
+    table = dynamodb.Table(username)
+
+    table.put_item(
+    Item={
+            'f_name': fname,
+            'f_url': furl,
+        }
+    )
