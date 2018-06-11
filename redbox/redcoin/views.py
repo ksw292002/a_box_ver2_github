@@ -19,7 +19,7 @@ from django.contrib.auth import login, authenticate
 # dynamoDB의 연결(테이블 생성, 파일정보 저장)과 관련된 기능
 # S3의 연결(Bucket 생성, 파일 업로드)과 관련된 기능
 from .dynamo_manager import createFileList, updateFileInfo
-from .s3_manager import createUserBucket
+from .s3_manager import createUserBucket, uploadFile
 
 # Create your views here.
 
@@ -122,6 +122,7 @@ def create(request) :
         form = FileUpForm(request.POST, request.FILES)
 
         if(form.is_valid()) : # form 검증
+        
             # form = FileUpForm이고
             # FileUpForm은 model과 연결되어 있으므로
             # 데이터를 저장하게 되는 것
@@ -134,20 +135,35 @@ def create(request) :
             # 즉, obj는 form에 연결되어 있는 model로 생성한 인스턴스이다.
             # commit=False 속성은 DB에 바로는 반영하지 말아달라고 하는 것.
             obj = form.save(commit=False)
+            
             # 이유는 user에 대한 정보를 넘기기 위해서
             # 여러가지 보안상의 문제가 있지만, 여기서는 편하게
             # 잠시 commit=False로 하고 아래와 같인 직접 할당.
             obj.user = request.user
+            
             # 그리고 최종 save()를 통해 유저정보까지 DB에 반영.            
             obj.save()
 
+
+
+            # username, file name, file url 설정.
+            username = request.user.username
+            fname = "file"
+            furl = obj.content.path
+
+            uploadFile(username, fname, furl)
+
+            return HttpResponse("s3 uploaded!")
+
+            # 위의 변수들을 토대로 upload
+            # uploadFile(username,fname,furl)
             # 해당 파일 로컬 업로드 후에 dynamo에 해당 파일에 대한 정보 업데이트
-            updateFileInfo(request.user.username,obj.content.url,obj.content.url)
+            # updateFileInfo(request.user.username, obj.content.url, obj.content.url)
 
             # redirect는 지정한 URL로 이동(?)시킨다.
             # 만약 인자가 model의 인스턴스라면
             # 그 객체의 get_absolute_url() 실행
-            return redirect(obj)
+            # return redirect(obj)
 
     ctx = {
         # key : tempalte파일 안에서 쓰여지는 변수의 이름
