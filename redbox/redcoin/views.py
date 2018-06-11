@@ -17,7 +17,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 
 # dynamoDB의 연결(테이블 생성, 파일정보 저장)과 관련된 기능
+# S3의 연결(Bucket 생성, 파일 업로드)과 관련된 기능
 from .dynamo_manager import createFileList, updateFileInfo
+from .s3_manager import createUserBucket
 
 # Create your views here.
 
@@ -35,8 +37,12 @@ def index(request):
             # **form.cleaned_data : 유효성 및 파이썬 반환을 고려해
             # request.POST로 접근하는 것 보다 이 방법을 권장한다.
             new_user = User.objects.create_user(**form.cleaned_data)
+            
             # user를 만들고 그 이름으로 dynamo에 file table 생성
+            # 그리고 그 이름으로 s3에 bucket을 생성
             createFileList(request.POST['username'])
+            createUserBucket(request.POST['username'])
+
             login(request, new_user)
             return redirect('users/')
     else:
