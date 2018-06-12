@@ -48,3 +48,15 @@ def getFileUrl(username, fname) :
     )
 
     return url
+
+# username을 받아서 user가 가지고 있는 파일 리스트를 가져옴.
+def getFileList(username):
+    s3 = boto3.client('s3')
+
+    """Get a list of keys in an S3 bucket."""
+    keys = []
+    bname = 's3b'+str(username)
+    resp = s3.list_objects_v2(Bucket=bname)
+    for obj in resp['Contents']:
+        keys.append(obj['Key'])
+    return keys
