@@ -6,7 +6,8 @@ def createUserBucket(username) :
     # Boto 3 - S3
     s3 = boto3.resource('s3')
 
-    s3.create_bucket(Bucket=username, CreateBucketConfiguration={
+    bname = 's3b'+str(username)
+    s3.create_bucket(Bucket=bname, CreateBucketConfiguration={
         'LocationConstraint': 'us-west-2'})
 
 
@@ -16,6 +17,34 @@ def uploadFile(username, fname, furl) :
     # Boto 3 - S3
     s3 = boto3.resource('s3')
 
-    # username이라는 이름을 가진 버킷에 fname으로 저장.
+    bname = 's3b'+str(username)
+
+    # bname이라는 이름을 가진 버킷에 fname으로 저장.
     # 세부 정보는 뒤에...
-    s3.Object(username, fname).put(Body=open(furl, 'rb'))
+    s3.Object(bname, fname).put(Body=open(furl, 'rb'))
+
+
+# username과 file name을 받아서 파일의 public url을 얻어온다.
+# def getFileUrl(username, fname) :
+    
+#     bname = 's3b'+str(username)
+#     url = '{}/{}/{}'.format('http://s3-us-west-2.amazonaws.com', bname, fname)
+
+#     return url
+
+def getFileUrl(username, fname) :
+    # Get the service client.
+    s3 = boto3.client('s3')
+
+    bname = 's3b'+str(username)
+
+    # Generate the URL to get 'key-name' from 'bucket-name'
+    url = s3.generate_presigned_url(
+        ClientMethod='get_object',
+        Params={
+            'Bucket': bname,
+            'Key': fname
+        }
+    )
+
+    return url
