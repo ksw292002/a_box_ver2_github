@@ -147,23 +147,22 @@ def create(request) :
 
 
             # username, file name, file url 설정.
+            # prefixing으로 파일이름만 추출
             username = request.user.username
-            fname = "file"
             furl = obj.content.path
-
-            uploadFile(username, fname, furl)
-
-            return HttpResponse("s3 uploaded!")
+            prefixing = 'content/'
+            fname = obj.content.name.replace(prefixing,'')
 
             # 위의 변수들을 토대로 upload
-            # uploadFile(username,fname,furl)
+            uploadFile(username, fname, furl)
+            
             # 해당 파일 로컬 업로드 후에 dynamo에 해당 파일에 대한 정보 업데이트
             # updateFileInfo(request.user.username, obj.content.url, obj.content.url)
 
             # redirect는 지정한 URL로 이동(?)시킨다.
             # 만약 인자가 model의 인스턴스라면
             # 그 객체의 get_absolute_url() 실행
-            # return redirect(obj)
+            return redirect('/users/')
 
     ctx = {
         # key : tempalte파일 안에서 쓰여지는 변수의 이름

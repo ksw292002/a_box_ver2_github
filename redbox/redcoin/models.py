@@ -14,8 +14,10 @@ from django.conf import settings
 class StoredFiles(models.Model) :
     file_number = models.AutoField(primary_key=True) # 자동으로 증가하는 file_number
     owner = models.CharField(max_length=50) # 이 파일을 소유하고 있는 user의 id
-    content = models.FileField(upload_to='%Y/%m/%d/content')
-    thumnail = models.ImageField(upload_to='%Y/%m/%d/thumnail')
+    # content = models.FileField(upload_to='%Y/%m/%d/content')
+    # thumnail = models.ImageField(upload_to='%Y/%m/%d/thumnail')
+    content = models.FileField(upload_to='content')
+    thumnail = models.ImageField(upload_to='thumnail')
     description = models.CharField(max_length=250, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True) # 파일 추가되면 그 시간 기록
 
